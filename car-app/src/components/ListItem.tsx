@@ -15,8 +15,8 @@ export const ListItem: React.FC<Props> = ({cars}) => {
                 <SingleItem 
                     key={car.id}
                     car={car}
-        />
-        ))}
+                />
+            ))}
         </ul>
     );
 };

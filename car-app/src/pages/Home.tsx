@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react"
 import { HorizontalScroll } from "../components/HorizontalScroll";
 import { ListItem } from "../components/ListItem";
+import { SelectMenu } from "../components/SelectMenu";
 import car from "../model/carsModel";
 
 
 export const Home: React.FC = () => {
 
-    //command to run json server locally : npx json-server -p 3500 -w data/db.json
+    //command to run json server locally : npx json-server -p 3500 -w public/api/cars.json
     const API_URL = 'http://localhost:3500/cars';
     const CARS_VIEW_SIZE = 4;
+    const DEFAULT_FILTER = "*";
 
     const [cars, setCars] = useState<car[]>([]);
-    const [carFilter, setcarFilter] = useState('');
+    const [carFilter, setcarFilter] = useState(DEFAULT_FILTER);
     const [startPos, setStartPos] = useState(0);
     const [endPos, setEndPos] = useState(CARS_VIEW_SIZE);
     const [fetchError, setFetchError] = useState(null);
@@ -57,7 +59,14 @@ export const Home: React.FC = () => {
         <main>
         {cars.length? (
             <div>
-                <ListItem cars={cars.filter(car => carFilter? (car.bodyType === "estate") : car ).slice(startPos,endPos)}/>
+                <SelectMenu 
+                    options={cars.map(car => car.bodyType.toUpperCase()).filter((value, index, self) => self.indexOf(value) === index)}
+                    defaultOption={DEFAULT_FILTER}
+                    setSelectedOption={setcarFilter}
+                />
+                <ListItem 
+                    cars={cars.filter(car => carFilter == DEFAULT_FILTER? car : (car.bodyType.toUpperCase() === carFilter) ).slice(startPos,endPos)}
+                />
                 <HorizontalScroll
                     length={cars.length}
                     currentLeftPosition={startPos}
